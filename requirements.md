@@ -1,19 +1,53 @@
-System Requirements
+## System Requirements for Chitty-Chat
 
-R1: Chitty-Chat is a distributed service, that enables its clients to chat. The service is using gRPC for communication. You have to design the API, including gRPC methods and data types.
+### R1: gRPC API Design
+- Chitty-Chat is a distributed service that enables clients to communicate via gRPC.
+- The API must include gRPC methods for:
+  - Publishing messages.
+  - Broadcasting messages to all participants.
+  - Handling client joins and exits.
+- The data types must include:
+  - Message structure (with content and timestamp).
+  - Participant information.
+  - Logical timestamp (either **Vector Clock** or **Lamport Timestamp**).
 
-R2: Clients in Chitty-Chat can Publish a valid chat message at any time they wish.  A valid message is a string of UTF-8 encoded text with a maximum length of 128 characters. 
-    A client publishes a message by making a gRPC call to Chitty-Chat.
+### R2: Message Publishing
+- Clients can publish valid chat messages at any time.
+- A valid message must:
+  - Be a UTF-8 encoded string.
+  - Have a maximum length of **128 characters**.
+- Clients will use a gRPC call to publish messages to the Chitty-Chat service.
 
-R3: The Chitty-Chat service has to broadcast every published message, together with the current logical timestamp, to all participants in the system, by using gRPC.
-    It is an implementation decision left to the students, whether a Vector Clock or a Lamport timestamp is sent.
+### R3: Message Broadcasting
+- After a client publishes a message, the service broadcasts it to all participants.
+- Each broadcast includes:
+  - The message content.
+  - The current logical timestamp.
+- The broadcast is sent using gRPC to all connected clients.
+- The timestamp can be implemented using a **Vector Clock** or **Lamport Timestamp** (implementation choice).
 
-R4: When a client receives a broadcasted message, it has to write the message and the current logical timestamp to the log
+### R4: Logging Messages
+- When a client receives a broadcasted message, the client logs:
+  - The message content.
+  - The associated logical timestamp.
+  
+### R5: Joining Clients
+- Chat clients can join the Chitty-Chat service at any time.
+- When a client joins, the system broadcasts a message:
+  - Format: `"Participant X joined Chitty-Chat at Lamport time L"`.
+  - This message is sent to all participants, including the newly joined client.
 
-R5: Chat clients can join at any time. 
+### R6: Leaving Clients
+- Chat clients can leave the Chitty-Chat service at any time.
+- When a client leaves, the system broadcasts a message:
+  - Format: `"Participant X left Chitty-Chat at Lamport time L"`.
+  - This message is sent to all remaining participants.
 
-R6: A "Participant X  joined Chitty-Chat at Lamport time L" message is broadcast to all Participants when client X joins, including the new Participant.
+### R7: Message Delivery Guarantee
+- The service must ensure that every published message is delivered **exactly once** to all participants.
 
-R7: Chat clients can drop out at any time. 
-
-R8: A "Participant X left Chitty-Chat at Lamport time L" message is broadcast to all remaining Participants when Participant X leaves.
+### R8: Logical Time Consistency
+- The service must maintain consistent logical time across all participants.
+- The logical time system must ensure that:
+  - **Causal relationships** between messages are preserved.
+  - **Message ordering** is handled according to the chosen logical timestamp (either **Vector Clock** or **Lamport Timestamp**).
