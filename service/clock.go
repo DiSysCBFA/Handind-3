@@ -1,4 +1,8 @@
-package main
+package service
+
+import (
+	"fmt"
+)
 
 // Lapart clock type with a map of username (string) to each individual clock (int)
 type LamportClock map[string]int
@@ -28,4 +32,14 @@ func (LcClock LamportClock) DetermineNewClock(sender, reciever string) {
 	}
 
 	LcClock.Tick(reciever)
+}
+
+func (LcClock LamportClock) PrintUserNameClock(username string) {
+	fmt.Println(username, ":", LcClock[username])
+}
+
+func (LcClock LamportClock) PrintAllClocks() {
+	for username, clock := range LcClock {
+		fmt.Println(username, ":", clock)
+	}
 }
