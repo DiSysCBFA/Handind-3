@@ -16,8 +16,16 @@ func (LcClock LamportClock) Tick(username string) {
 }
 
 // Get the clock of the given username
-
 func (LcClock LamportClock) GetClock(username string) int {
 
 	return LcClock[username]
+}
+
+// Takes 2 usernames and increments the clock of the receiver to the max of the two clocks + 1
+func (LcClock LamportClock) DetermineNewClock(sender, reciever string) {
+	if LcClock[sender] > LcClock[reciever] {
+		LcClock[reciever] = LcClock[sender]
+	}
+
+	LcClock.Tick(reciever)
 }
