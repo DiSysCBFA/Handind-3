@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"../service"
+	"handin-3/service"
 )
 
 var (
@@ -20,5 +20,7 @@ func main() {
 
 	// Init clock on username
 	LcClock.AddClock(username)
+
+	LcClock.PrintUserNameClock(username)
 
 }

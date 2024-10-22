@@ -4,34 +4,32 @@ import (
 	"fmt"
 )
 
-// Lapart clock type with a map of username (string) to each individual clock (int)
 type LamportClock map[string]int
 
-// Initialize a new LamportClock on username
-func (LcClock LamportClock) AddClock(username string) {
-	LcClock[username] = 0
+func (LcClock *LamportClock) AddClock(username string) {
+	if *LcClock == nil {
+		*LcClock = make(map[string]int)
+	}
+	(*LcClock)[username] = 0
 }
 
-// Increment the clock of the given username
-func (LcClock LamportClock) Tick(username string) {
-
-	// TODO: implement check for if the username exists in the map. otherwise create it.
-	LcClock[username]++
+func (LcClock *LamportClock) Tick(username string) {
+	if _, exists := (*LcClock)[username]; !exists {
+		(*LcClock)[username] = 0
+	}
+	(*LcClock)[username]++
 }
 
-// Get the clock of the given username
 func (LcClock LamportClock) GetClock(username string) int {
-
 	return LcClock[username]
 }
 
-// Takes 2 usernames and increments the clock of the receiver to the max of the two clocks + 1
-func (LcClock LamportClock) DetermineNewClock(sender, reciever string) {
-	if LcClock[sender] > LcClock[reciever] {
-		LcClock[reciever] = LcClock[sender]
+func (LcClock *LamportClock) DetermineNewClock(sender, receiver string) {
+	if (*LcClock)[sender] > (*LcClock)[receiver] {
+		(*LcClock)[receiver] = (*LcClock)[sender]
 	}
 
-	LcClock.Tick(reciever)
+	LcClock.Tick(receiver)
 }
 
 func (LcClock LamportClock) PrintUserNameClock(username string) {
