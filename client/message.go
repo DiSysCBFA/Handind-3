@@ -3,13 +3,13 @@ package main
 import (
 	"errors"
 	"fmt"
-	"time"
+	"handin-3/service"
 )
 
 type Message struct {
 	username  string
 	content   string
-	timestamp time.Time
+	timestamp service.LamportClock
 }
 
 func (m *Message) display() {
@@ -27,9 +27,9 @@ func (m *Message) setContent(content string) error {
 	}
 
 	m.content = content
-
+	return nil
 }
 
-func (m *Message) setTimestamp() {
-	m.timestamp = time.Now()
+func (m *Message) setTimestamp(timestamp service.LamportClock) {
+	m.timestamp = timestamp
 }
