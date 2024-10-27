@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"time"
 )
@@ -19,7 +20,12 @@ func (m *Message) setUsername(username string) {
 	m.username = username
 }
 
-func (m *Message) setContent(content string) {
+func (m *Message) setContent(content string) error {
+
+	if len(content) > 128 {
+		return errors.New("Message cannot exceed 128 characters")
+	}
+
 	m.content = content
 
 }
