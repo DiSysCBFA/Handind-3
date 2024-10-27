@@ -12,6 +12,11 @@ type server struct {
 	name string
 }
 
+func (s *server) init() {
+	// Init clock on server
+	s.clock.AddClock(s.name)
+}
+
 func (s *server) incrementClock() {
 	s.clock.Tick(s.name)
 }
