@@ -48,12 +48,12 @@ func StartClient(NameInput string, adressInput string) {
 	defer conn.Close()
 
 	client = tasks.NewChittyChatClient(conn)
-	JoinChat()
+	JoinChat(NameInput)
 	//go broadcastListener(c)*/
 	select {}
 }
 
-func JoinChat() {
+func JoinChat(username string) {
 	log.Printf("Joining chat as user: %s on time %d...", username, LcClock.GetClock(name))
 
 	// Create a context with a timeout to avoid indefinite waits

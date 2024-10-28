@@ -31,11 +31,10 @@ func main() {
 		//use grpc to start new server
 	}
 
-	if result == "Start New Client" {
+	if result == "Start new Client" {
 		// Prompt for client name
 		selectionName := promptui.Prompt{
 			Label: "Enter desired name",
-
 		}
 		name, err := selectionName.Run()
 		if err != nil {
