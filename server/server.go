@@ -4,6 +4,7 @@ import "handin-3/service"
 
 const (
 	name = "Chitty-Chat-Server"
+	port = ":5000"
 )
 
 type server struct {
