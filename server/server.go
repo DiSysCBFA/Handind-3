@@ -156,3 +156,16 @@ func (s server) participantLeave(username string) error {
 
 	return nil
 }
+
+func (s server) sendMessage(context context.Context, request tasks.Message) (*tasks.PublicMessage, error) {
+	return nil, nil
+
+}
+
+func (s server) ParticipantSend(msg string) {
+
+}
+
+func (s server) Broadcast(stream tasks.ChittyChat_BroadcastServer) error { return nil }
+
+func (s server) BroadcastToParticipants(msg string) error { return nil }
