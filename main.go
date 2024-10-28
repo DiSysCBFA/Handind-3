@@ -35,6 +35,7 @@ func main() {
 		// Prompt for client name
 		selectionName := promptui.Prompt{
 			Label: "Enter desired name",
+
 		}
 		name, err := selectionName.Run()
 		if err != nil {
@@ -50,7 +51,7 @@ func main() {
 			log.Fatalf("Address must be provided")
 		}
 		client.StartClient(name, address)
-
+		select {}
 	}
 
 	if result == "Exit" {
