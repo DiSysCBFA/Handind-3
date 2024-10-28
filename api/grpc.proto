@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+import
+    "google/protobuf/empty.proto";
+
+option go_package = "github.com/DiSysCBFA/Handind-3/service";
+
+package chitty_chat;
+
+service ChittyChat {
+  rpc toserver(Message) returns (Message) {}
+  rpc Broadcast(stream Message) returns (publicMessage) {}
+  rpc Join(Joins) returns (JoinMessage) {}
+  rpc Leave(Leaves) returns (LeaveMessage) {}
+}
+
+message LamportClock {
+  uint32 timestamp = 1;
+  string content = 2;
+}
+
+message Message {
+  string participant = 1;
+  string content = 2;
+  LamportClock timestamp = 3;
+}
+
+message Joins {
+  string participant = 1;
+  int32 timestamp = 2;
+}
+
+message JoinMessage {
+  string participant = 1;
+  int32 timestamp = 2;
+}
+
+message Leaves {
+  string participant = 1;
+}
+
+message LeaveMessage {
+  string participant = 1;
+  int32 timestamp = 2;
+}
+message publicMessage {
+  string participant = 1;
+  string content = 2;
+  int32 timestamp = 3;
+}
