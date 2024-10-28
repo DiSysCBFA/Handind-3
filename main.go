@@ -27,11 +27,11 @@ func main() {
 	if result == "Start new Client" {
 		//start new client
 
-		selectionName := promptui.Select{
+		selectionName := promptui.Prompt{
 			Label: "Input desired name, or leave blank for defualt",
 		}
 
-		_, resultName, err := selectionName.Run()
+		resultName, err := selectionName.Run()
 
 		if err != nil {
 			log.Fatalf("Failed to run: %v", err)
