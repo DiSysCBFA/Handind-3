@@ -19,5 +19,9 @@ func setupServer() {
 	}
 
 	grpcServer, err := NewGrpcServer(name)
+	if err != nil {
+		log.Fatalf("Failed to create gRPC server: %v", err)
+	}
 
+	grpcServer, err := CreateGrpcServer(name)
 }
