@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	port = ":5000" // default port
+	port = ":4321" // default port
 	name = "Chitty-Chat-Server"
 )
 

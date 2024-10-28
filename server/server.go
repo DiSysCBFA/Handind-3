@@ -7,7 +7,7 @@ import (
 
 	"google.golang.org/grpc"
 
-	tasks "handin-3/api"
+	tasks "github.com/DiSysCBFA/Handind-3/api"
 )
 
 type server struct {
