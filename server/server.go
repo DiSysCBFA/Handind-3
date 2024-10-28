@@ -125,3 +125,35 @@ func (s *server) addParticipant(username string) error {
 
 	return nil
 }
+
+func (s server) removeParticpants(username string) error {
+	if _, ok := s.users[username]; ok {
+		delete(s.users, username)
+	} else {
+		log.Printf("Participant with id %s does not exist ", username)
+		return errors.New("client does not exist")
+	}
+
+	if username == "" {
+		log.Printf("participant has no username")
+		return errors.New("participant has no username")
+	}
+
+	log.Printf("[%s] Removed participant %s", s.getName(), username)
+	s.incrementClock()
+
+	return nil
+}
+
+func (s server) participantLeave(username string) error {
+	err := s.removeParticpants(username)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("[%s] Participant %s left the chat", s.getName(), username)
+
+	s.incrementClock()
+
+	return nil
+}
