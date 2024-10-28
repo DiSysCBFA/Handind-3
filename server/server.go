@@ -107,7 +107,7 @@ func (s *server) Join(ctx context.Context, req *tasks.Joins) (*tasks.JoinMessage
 // Method to add a participant to the users map
 func (s *server) addParticipant(username string) error {
 	if _, ok := s.users[username]; !ok {
-		s.users[username] = Subscription{} // No error here, as users map now accepts Subscription type
+		s.users[username] = Subscription{}
 	} else {
 		log.Printf("Participant with id %s already exists ", username)
 		return errors.New("client already exists")
