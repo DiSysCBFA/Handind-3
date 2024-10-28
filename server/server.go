@@ -88,16 +88,13 @@ func CreateGrpcServer(name string) (*grpc.Server, error) {
 func (s *server) Join(ctx context.Context, req *tasks.Joins) (*tasks.JoinMessage, error) {
 	log.Printf("A client wants to join the chat")
 
-	// Add the client to the broadcast
 	err := s.memberJoin(req.GetParticipant())
 	if err != nil {
 		return nil, err
 	}
 
-	// Log the join request
 	log.Printf("[%s: %d] Received a JOIN request from: %s", s.getName(), s.GetClock(), req.GetParticipant())
 
-	// Increment the clock after processing the request
 	s.incrementClock()
 
 	// Construct and return the JoinMessage with the current Lamport clock
@@ -122,6 +119,8 @@ func (s *server) addParticipant(username string) error {
 	}
 
 	log.Printf("[%s] Added new participant %s", s.getName(), username)
+
+	s.incrementClock()
 
 	return nil
 }
