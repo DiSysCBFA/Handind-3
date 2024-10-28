@@ -24,3 +24,21 @@ func main() {
 	LcClock.PrintUserNameClock(username)
 
 }
+
+func StartClient(NameInput string, adressInput string) {
+
+	
+}
+
+func JoinChat(){
+
+}
+func LeaveChat(){
+
+}
+
+func sendMessage(){
+
+}
+
+func ListnerforMessages(){}
