@@ -1,10 +1,6 @@
-package main
+package server
 
 import "handin-3/service"
-
-const (
-	name = "Chitty-Chat-Server"
-)
 
 type server struct {
 	clock service.LamportClock
