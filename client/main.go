@@ -1,4 +1,4 @@
-package main
+package client
 
 import (
 	"context"
@@ -50,7 +50,7 @@ func StartClient(NameInput string, adressInput string) {
 	client = tasks.NewChittyChatClient(conn)
 	JoinChat()
 	//go broadcastListener(c)*/
-
+	select {}
 }
 
 func JoinChat() {
