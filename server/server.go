@@ -21,6 +21,10 @@ func (s *server) incrementClock() {
 	s.clock.Tick(s.name)
 }
 
+func (s *server) determineNewClock(sender string) {
+	s.clock.DetermineNewClock(sender, s.name)
+}
+
 func (s *server) getName() string {
 	return s.name
 }
