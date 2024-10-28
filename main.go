@@ -31,38 +31,26 @@ func main() {
 		//use grpc to start new server
 	}
 
-	if result == "Start new Client" {
-		//start new client
-
+	if result == "Start New Client" {
+		// Prompt for client name
 		selectionName := promptui.Prompt{
-			Label: "Input desired name, or leave blank for defualt",
+			Label: "Enter desired name",
 		}
-
-		resultName, err := selectionName.Run()
-
+		name, err := selectionName.Run()
 		if err != nil {
 			log.Fatalf("Failed to run: %v", err)
 		}
 
-		if resultName == "" {
-			resultName = "Client"
+		// Prompt for server address without a default
+		selectionAddress := promptui.Prompt{
+			Label: "Enter server address",
 		}
+		address, err := selectionAddress.Run()
+		if err != nil || address == "" {
+			log.Fatalf("Address must be provided")
+		}
+		client.StartClient(name, address)
 
-		client.StartClient(resultName)
-
-		/*
-			selectionAddress := promptui.Select{
-				Label: "Input desired address, or leave blank for defualt",
-			}
-
-			_, resultAddress, err := selectionAddress.Run()
-
-			if err != nil {
-				log.Fatalf("Failed to run: %v", err)
-			}
-
-			// use grpc to start new client
-		*/
 	}
 
 	if result == "Exit" {
@@ -71,5 +59,4 @@ func main() {
 		log.Println("Exiting...")
 		os.Exit(1)
 	}
-
 }
