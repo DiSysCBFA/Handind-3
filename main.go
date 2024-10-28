@@ -41,18 +41,19 @@ func main() {
 			resultName = "Client"
 		}
 
-		selectionAddress := promptui.Select{
-			Label: "Input desired address, or leave blank for defualt",
-		}
+		/*
+			selectionAddress := promptui.Select{
+				Label: "Input desired address, or leave blank for defualt",
+			}
 
-		_, resultAddress, err := selectionAddress.Run()
+			_, resultAddress, err := selectionAddress.Run()
 
-		if err != nil {
-			log.Fatalf("Failed to run: %v", err)
-		}
+			if err != nil {
+				log.Fatalf("Failed to run: %v", err)
+			}
 
-		// use grpc to start new client
-
+			// use grpc to start new client
+		*/
 	}
 
 	if result == "Exit" {
