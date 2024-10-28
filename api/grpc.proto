@@ -50,6 +50,6 @@ message publicMessage {
 }
 
 message JoinRequest {
-  string username
-  LamportClock clock
+  string username = 1;
+  LamportClock clock = 2;
 }
