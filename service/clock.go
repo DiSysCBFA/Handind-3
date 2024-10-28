@@ -1,43 +1,45 @@
 package service
 
-import (
-	"fmt"
-)
+type LamportClock struct {
+	clock map[string]int
+}
 
-type LamportClock map[string]int
-
-func (LcClock *LamportClock) AddClock(username string) {
-	if *LcClock == nil {
-		*LcClock = make(map[string]int)
+// NewLamportClock initializes the clock map to avoid nil map errors
+func NewLamportClock() *LamportClock {
+	return &LamportClock{
+		clock: make(map[string]int),
 	}
-	(*LcClock)[username] = 0
 }
 
-func (LcClock *LamportClock) Tick(username string) {
-	if _, exists := (*LcClock)[username]; !exists {
-		(*LcClock)[username] = 0
+// AddClock initializes a clock entry for a new user
+func (lc *LamportClock) AddClock(username string) {
+	if lc.clock == nil {
+		lc.clock = make(map[string]int)
 	}
-	(*LcClock)[username]++
+	lc.clock[username] = 0
 }
 
-func (LcClock LamportClock) GetClock(username string) int {
-	return LcClock[username]
-}
-
-func (LcClock *LamportClock) DetermineNewClock(sender, receiver string) {
-	if (*LcClock)[sender] > (*LcClock)[receiver] {
-		(*LcClock)[receiver] = (*LcClock)[sender]
+// Tick increments the clock for the specified user
+func (lc *LamportClock) Tick(username string) {
+	if lc.clock == nil {
+		lc.clock = make(map[string]int)
 	}
-
-	LcClock.Tick(receiver)
+	lc.clock[username]++
 }
 
-func (LcClock LamportClock) PrintUserNameClock(username string) {
-	fmt.Println(username, ":", LcClock[username])
+// GetClock retrieves the current clock value for a specified user
+func (lc *LamportClock) GetClock(username string) int {
+	if lc.clock == nil {
+		lc.clock = make(map[string]int)
+	}
+	return lc.clock[username]
 }
 
-func (LcClock LamportClock) PrintAllClocks() {
-	for username, clock := range LcClock {
-		fmt.Println(username, ":", clock)
+func (lc *LamportClock) DetermineNewClock(sender string, receiver string) {
+	if lc.clock == nil {
+		lc.clock = make(map[string]int)
+	}
+	if lc.clock[sender] >= lc.clock[receiver] {
+		lc.clock[receiver] = lc.clock[sender] + 1
 	}
 }
