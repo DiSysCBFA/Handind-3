@@ -6,6 +6,8 @@ import (
 
 	"github.com/DiSysCBFA/Handind-3/server"
 
+	"github.com/DiSysCBFA/Handind-3/client"
+
 	"github.com/manifoldco/promptui"
 )
 
@@ -45,6 +47,8 @@ func main() {
 		if resultName == "" {
 			resultName = "Client"
 		}
+
+		client.StartClient(resultName)
 
 		/*
 			selectionAddress := promptui.Select{
