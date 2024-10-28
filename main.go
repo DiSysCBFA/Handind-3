@@ -31,7 +31,7 @@ func main() {
 		//use grpc to start new server
 	}
 
-	if result == "Start New Client" {
+	if result == "Start new Client" {
 		// Prompt for client name
 		selectionName := promptui.Prompt{
 			Label: "Enter desired name",
@@ -51,7 +51,6 @@ func main() {
 			log.Fatalf("Address must be provided")
 		}
 		client.StartClient(name, address)
-		select {}
 	}
 
 	if result == "Exit" {
