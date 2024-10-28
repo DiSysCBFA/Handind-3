@@ -3,7 +3,8 @@ package main
 import (
 	"errors"
 	"fmt"
-	"handin-3/service"
+
+	"github.com/DiSysCBFA/Handind-3/service"
 )
 
 type Message struct {

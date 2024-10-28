@@ -1,4 +1,4 @@
-module handin-3
+module  github.com/DiSysCBFA/Handind-3
 
 go 1.23.0
 

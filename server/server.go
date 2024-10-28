@@ -1,12 +1,17 @@
-package main
+package server
 
-import "handin-3/service"
+import (
+	"log"
 
-const (
-	name = "Chitty-Chat-Server"
+	"github.com/DiSysCBFA/Handind-3/service"
+
+	"google.golang.org/grpc"
+
+	tasks "github.com/DiSysCBFA/Handind-3/api"
 )
 
 type server struct {
+	tasks.UnimplementedTaskServiceServer
 	clock service.LamportClock
 
 	name string
@@ -27,4 +32,33 @@ func (s *server) determineNewClock(sender string) {
 
 func (s *server) getName() string {
 	return s.name
+}
+
+func CreateServer(name string) (*server, error) {
+
+	chittyChatServer := server{
+		clock: service.LamportClock{},
+		name:  name,
+	}
+
+	return &chittyChatServer, nil
+}
+
+func CreateGrpcServer(name string) (*grpc.Server, error) {
+	grpcServer := grpc.NewServer()
+	chatServer, err := CreateServer(name)
+	chatServer.init()
+
+	if err != nil {
+		return nil, err
+	}
+
+	tasks.RegisterTaskServiceServer(grpcServer, *chatServer)
+
+	log.Printf("Starting gRPC server with name: %s", name)
+
+	chatServer.incrementClock()
+
+	return grpcServer, nil
+
 }

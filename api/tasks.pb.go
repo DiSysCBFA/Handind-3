@@ -4,7 +4,7 @@
 // 	protoc        v5.28.2
 // source: tasks.proto
 
-package tasks
+package api
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"

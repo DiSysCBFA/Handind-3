@@ -4,6 +4,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/DiSysCBFA/Handind-3/server"
+
 	"github.com/manifoldco/promptui"
 )
 
@@ -21,6 +23,8 @@ func main() {
 
 	if result == "Start Server" {
 		//start new server
+
+		server.SetupServer()
 
 		//use grpc to start new server
 	}
