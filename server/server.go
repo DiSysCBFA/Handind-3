@@ -14,6 +14,8 @@ type server struct {
 	tasks.UnimplementedChittyChatServer
 	clock service.LamportClock
 
+	users map[string]tasks.ChittyChat_BroadcastServer
+
 	name string
 }
 
@@ -32,6 +34,10 @@ func (s *server) determineNewClock(sender string) {
 
 func (s *server) getName() string {
 	return s.name
+}
+
+func (s *server) memberJoin(member string) {
+	s.users[member] = nil
 }
 
 func CreateServer(name string) (*server, error) {
