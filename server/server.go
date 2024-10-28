@@ -11,7 +11,7 @@ import (
 )
 
 type server struct {
-	tasks.UnimplementedTaskServiceServer
+	tasks.UnimplementedChittyChatServer
 	clock service.LamportClock
 
 	name string
@@ -53,7 +53,7 @@ func CreateGrpcServer(name string) (*grpc.Server, error) {
 		return nil, err
 	}
 
-	tasks.RegisterTaskServiceServer(grpcServer, *chatServer)
+	tasks.RegisterChittyChatServer(grpcServer, *chatServer)
 
 	log.Printf("Starting gRPC server with name: %s", name)
 
@@ -62,5 +62,3 @@ func CreateGrpcServer(name string) (*grpc.Server, error) {
 	return grpcServer, nil
 
 }
-
-func (s *server) Join(joinRequest *tasks.JoinRequest) {}
