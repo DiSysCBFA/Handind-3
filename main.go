@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/manifoldco/promptui"
 )
@@ -59,9 +60,8 @@ func main() {
 	if result == "Exit" {
 
 		//exit
-
 		log.Println("Exiting...")
-
+		os.Exit(1)
 	}
 
 }
