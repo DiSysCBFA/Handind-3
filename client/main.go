@@ -2,7 +2,6 @@ package client
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
@@ -14,35 +13,26 @@ import (
 )
 
 const (
-	defaultAdress = "localhost:5000"
-	name          = "chittyChat"
+	defaultAddress = "localhost:4002" // Updated to use port 4002
+	name           = "chittyChat"
 )
 
 var (
 	username string
-	adrress  string
-	LcClock  service.LamportClock
+	address  string
+	LcClock  *service.LamportClock // Use a pointer to ensure initialization
 	client   tasks.ChittyChatClient
 )
 
-func main() {
+func StartClient(NameInput string, addressInput string) {
+	username = NameInput
 
-	// Init username
-	fmt.Println("Enter username:")
-	fmt.Scan(&username)
-	fmt.Println("Hello", username)
-
-	// Init clock on username
+	// Initialize Lamport Clock to avoid nil map issues
+	LcClock = service.NewLamportClock()
 	LcClock.AddClock(username)
 
-	LcClock.PrintUserNameClock(username)
-
-}
-
-func StartClient(NameInput string, adressInput string) {
-	username = NameInput
-	// Connect to server
-	conn, err := grpc.NewClient(adressInput, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	// Connect to server using grpc.Dial
+	conn, err := grpc.Dial(addressInput, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Failed to connect: %v", err)
 	}
@@ -50,12 +40,11 @@ func StartClient(NameInput string, adressInput string) {
 
 	client = tasks.NewChittyChatClient(conn)
 	JoinChat(client)
-	//go broadcastListener(c)*/
 	select {}
 }
 
 func JoinChat(client tasks.ChittyChatClient) {
-	log.Printf("Joining chat as user: %s on time %d...", username, LcClock.GetClock(name))
+	log.Printf("Joining chat as user: %s on time %d...", username, LcClock.GetClock(username))
 
 	// Create a context with a timeout to avoid indefinite waits
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
@@ -67,7 +56,7 @@ func JoinChat(client tasks.ChittyChatClient) {
 	})
 
 	if err != nil {
-		log.Fatalf("could not join chat: %v", err)
+		log.Fatalf("Could not join chat: %v", err)
 	}
 
 	LcClock.Tick(username)
@@ -75,7 +64,6 @@ func JoinChat(client tasks.ChittyChatClient) {
 }
 
 func LeaveChat() {
-
 	log.Printf("Leaving chat as user: %s on time %d...", username, LcClock.GetClock(username))
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
@@ -87,7 +75,6 @@ func LeaveChat() {
 	if err != nil {
 		log.Fatalf("Could not leave chat: %v", err)
 	}
-
 }
 
 func sendMessage() {
@@ -106,7 +93,6 @@ func sendMessage() {
 }
 
 func listenerforMessages() {
-
 	/*stream, err := client.Broadcast(context.Background(), &tasks.Message{})
 	  if err != nil {
 	      log.Fatalf("Error listening for messages: %v", err)
