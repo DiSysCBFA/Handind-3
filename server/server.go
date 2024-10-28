@@ -18,7 +18,7 @@ type Subscription struct {
 
 type server struct {
 	tasks.UnimplementedChittyChatServer // Embedding the unimplemented server for forward compatibility
-	clock                               service.LamportClock
+	clock                               *service.LamportClock
 	users                               map[string]Subscription
 	name                                string
 }
@@ -58,7 +58,7 @@ func (s *server) GetClock() int32 {
 // Create and initialize a new server instance
 func CreateServer(name string) (*server, error) {
 	chittyChatServer := &server{
-		clock: service.LamportClock{},
+		clock: service.NewLamportClock(), // Properly initialize the LamportClock
 		name:  name,
 		users: make(map[string]Subscription),
 	}
@@ -125,7 +125,8 @@ func (s *server) addParticipant(username string) error {
 	return nil
 }
 
-func (s server) removeParticpants(username string) error {
+// Method to remove a participant from the users map
+func (s *server) removeParticipant(username string) error {
 	if _, ok := s.users[username]; ok {
 		delete(s.users, username)
 	} else {
@@ -144,28 +145,35 @@ func (s server) removeParticpants(username string) error {
 	return nil
 }
 
-func (s server) participantLeave(username string) error {
-	err := s.removeParticpants(username)
+// Handles a participant leaving the chat
+func (s *server) participantLeave(username string) error {
+	err := s.removeParticipant(username)
 	if err != nil {
 		return err
 	}
 
 	log.Printf("[%s] Participant %s left the chat", s.getName(), username)
-
 	s.incrementClock()
 
 	return nil
 }
 
-func (s server) sendMessage(context context.Context, request tasks.Message) (*tasks.PublicMessage, error) {
-	return nil, nil
-
+// Handles sending a message from a participant
+func (s *server) Toserver(ctx context.Context, req *tasks.Message) (*tasks.Message, error) {
+	log.Printf("Received message from %s: %s", req.Participant, req.Content)
+	s.incrementClock()
+	return req, nil
 }
 
-func (s server) ParticipantSend(msg string) {
-
+// Broadcasts a message to all participants
+func (s *server) Broadcast(stream tasks.ChittyChat_BroadcastServer) error {
+	log.Printf("Starting broadcast...")
+	for {
+		msg, err := stream.Recv()
+		if err != nil {
+			log.Printf("Broadcast error: %v", err)
+			return err
+		}
+		log.Printf("Broadcasting message from %s: %s", msg.Participant, msg.Content)
+	}
 }
-
-func (s server) Broadcast(stream tasks.ChittyChat_BroadcastServer) error { return nil }
-
-func (s server) BroadcastToParticipants(msg string) error { return nil }

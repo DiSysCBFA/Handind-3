@@ -35,7 +35,6 @@ func main() {
 		// Prompt for client name
 		selectionName := promptui.Prompt{
 			Label: "Enter desired name",
-
 		}
 		username, err := selectionName.Run()
 		if err != nil {
