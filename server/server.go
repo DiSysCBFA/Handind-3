@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	"github.com/DiSysCBFA/Handind-3/service"
@@ -10,10 +11,15 @@ import (
 	tasks "github.com/DiSysCBFA/Handind-3/api"
 )
 
+type Subscription struct {
+	stream   tasks.ChittyChat_BroadcastServer
+	finished chan<- bool
+}
+
 type server struct {
 	tasks.UnimplementedChittyChatServer // Embedding the unimplemented server for forward compatibility
 	clock                               service.LamportClock
-	users                               map[string]tasks.ChittyChat_BroadcastServer
+	users                               map[string]Subscription
 	name                                string
 }
 
@@ -39,7 +45,7 @@ func (s *server) getName() string {
 
 // Method for handling a new member joining the chat
 func (s *server) memberJoin(member string) error {
-	s.users[member] = nil
+	s.users[member] = Subscription{}
 	log.Printf("User %s joined the chat", member)
 	return nil
 }
@@ -54,7 +60,7 @@ func CreateServer(name string) (*server, error) {
 	chittyChatServer := &server{
 		clock: service.LamportClock{},
 		name:  name,
-		users: make(map[string]tasks.ChittyChat_BroadcastServer),
+		users: make(map[string]Subscription),
 	}
 	chittyChatServer.init()
 	return chittyChatServer, nil
@@ -99,4 +105,23 @@ func (s *server) Join(ctx context.Context, req *tasks.Joins) (*tasks.JoinMessage
 		Participant: req.GetParticipant(),
 		Timestamp:   s.GetClock(),
 	}, nil
+}
+
+// Method to add a participant to the users map
+func (s *server) addParticipant(username string) error {
+	if _, ok := s.users[username]; !ok {
+		s.users[username] = Subscription{} // No error here, as users map now accepts Subscription type
+	} else {
+		log.Printf("Participant with id %s already exists ", username)
+		return errors.New("client already exists")
+	}
+
+	if username == "" {
+		log.Printf("participant has no username")
+		return errors.New("participant has no username")
+	}
+
+	log.Printf("[%s] Added new participant %s", s.getName(), username)
+
+	return nil
 }
