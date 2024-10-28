@@ -3,7 +3,7 @@ syntax = "proto3";
 import
     "google/protobuf/empty.proto";
 
-option go_package = "github.com/DiSysCBFA/Handind-3/service";
+option go_package = "github.com/DiSysCBFA/Handind-3/api";
 
 package chitty_chat;
 
@@ -50,6 +50,6 @@ message publicMessage {
 }
 
 message JoinRequest {
-  string username
-  LamportClock clock
+  string username = 1;
+  LamportClock clock = 2;
 }
