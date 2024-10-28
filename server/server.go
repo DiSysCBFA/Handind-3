@@ -62,3 +62,5 @@ func CreateGrpcServer(name string) (*grpc.Server, error) {
 	return grpcServer, nil
 
 }
+
+func (s *server) Join(joinRequest *tasks.JoinRequest) {}
