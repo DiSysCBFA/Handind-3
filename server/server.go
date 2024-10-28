@@ -1,8 +1,9 @@
 package server
 
 import (
-	"handin-3/service"
 	"log"
+
+	"github.com/DiSysCBFA/Handind-3/service"
 
 	"google.golang.org/grpc"
 

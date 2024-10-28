@@ -10,7 +10,7 @@ const (
 	name = "Chitty-Chat-Server"
 )
 
-func setupServer() {
+func SetupServer() {
 	log.Println("Setting up server on port:", port, "with the name", name)
 	lis, err := net.Listen("tcp", port)
 
