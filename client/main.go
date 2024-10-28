@@ -39,7 +39,7 @@ func main() {
 
 }
 
-func StartClient(NameInput string, adressInput string) {
+func StartClient(username string, adressInput string) {
 	// Connect to server
 	conn, err := grpc.NewClient(adressInput, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
@@ -50,14 +50,13 @@ func StartClient(NameInput string, adressInput string) {
 	client = tasks.NewChittyChatClient(conn)
 	JoinChat()
 	//go broadcastListener(c)*/
-	select {}
 }
 
 func JoinChat() {
 	log.Printf("Joining chat as user: %s on time %d...", username, LcClock.GetClock(name))
 
 	// Create a context with a timeout to avoid indefinite waits
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	res, err := client.Join(ctx, &tasks.Joins{
