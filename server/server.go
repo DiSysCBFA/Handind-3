@@ -38,6 +38,7 @@ func (s *server) getName() string {
 
 func (s *server) memberJoin(member string) {
 	s.users[member] = nil
+	log.Printf("User %s joined the chat", member)
 }
 
 func CreateServer(name string) (*server, error) {
