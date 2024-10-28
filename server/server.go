@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"log"
 
 	"github.com/DiSysCBFA/Handind-3/service"
@@ -36,9 +37,14 @@ func (s *server) getName() string {
 	return s.name
 }
 
-func (s *server) memberJoin(member string) {
+func (s *server) memberJoin(member string) error {
 	s.users[member] = nil
 	log.Printf("User %s joined the chat", member)
+	return nil
+}
+
+func (s *server) GetClock() int32 {
+	return int32(s.clock.GetClock(s.getName()))
 }
 
 func CreateServer(name string) (*server, error) {
@@ -68,4 +74,19 @@ func CreateGrpcServer(name string) (*grpc.Server, error) {
 
 	return grpcServer, nil
 
+}
+
+func (s server) Join(context context.Context, req *tasks.JoinRequest) error {
+	log.Printf("a client wants to join the chat")
+
+	// add the client to the broadcast
+	err := s.memberJoin(req.GetUsername())
+	if err != nil {
+		return err
+	}
+	// if the client is not in the clients map, add it to the clients map
+	// and return a JoinResponse with a status of OK
+	log.Printf("[%s: %d] Received a JOIN req from node %s", s.getName(), s.GetClock())
+	s.incrementClock()
+	return nil
 }
