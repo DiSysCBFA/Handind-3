@@ -1,9 +1,13 @@
 package client
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"log"
+	"os"
+	"strings"
+	"time"
 
 	"github.com/DiSysCBFA/Handind-3/api"
 	chat "github.com/DiSysCBFA/Handind-3/api"
@@ -62,20 +66,22 @@ func (c *Client) Join() {
 
 // BroadcastMessages prompts the user to send messages
 func (c *Client) BroadcastMessages() {
+	reader := bufio.NewReader(os.Stdin)
 	for {
-		var content string
 		fmt.Print("Enter message: ")
-		_, err := fmt.Scanln(&content)
+		content, err := reader.ReadString('\n')
 		if err != nil {
 			log.Fatalf("Failed to read message: %v", err)
 		}
-		c.timestamp++
+
+		// Trim newline characters from the message
+		content = strings.TrimSpace(content)
 
 		// Send the message to the server using the Broadcast method
 		_, err = c.ChittyChatClient.Broadcast(context.Background(), &chat.Message{
 			Participant: c.name,
 			Content:     content,
-			Timestamp:   int64(c.timestamp),
+			Timestamp:   time.Now().Unix(),
 		})
 		if err != nil {
 			log.Fatalf("Failed to send message: %v", err)
