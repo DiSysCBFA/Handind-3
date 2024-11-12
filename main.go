@@ -7,12 +7,10 @@ import (
 
 	"github.com/DiSysCBFA/Handind-3/client"
 	"github.com/DiSysCBFA/Handind-3/server"
-
 	"github.com/manifoldco/promptui"
 )
 
 func main() {
-
 	selection := promptui.Select{
 		Label: "Select an option",
 		Items: []string{"Start Server", "Start new Client", "Exit"},
@@ -24,15 +22,10 @@ func main() {
 	}
 
 	if result == "Start Server" {
-		//start new server
-
-		SetupServer()
-
-		//use grpc to start new server
+		SetupServer() // Start the server
 	}
 
 	if result == "Start new Client" {
-
 		// Prompt for client name
 		selectionName := promptui.Prompt{
 			Label: "Enter desired name",
@@ -42,27 +35,25 @@ func main() {
 			log.Fatalf("Failed to run: %v", err)
 		}
 
-		// Prompt for server address without a default
+		// Prompt for server address
 		selectionAddress := promptui.Prompt{
 			Label: "Enter server address",
 		}
-
 		address, err := selectionAddress.Run()
 		if err != nil || address == "" {
 			log.Fatalf("Address must be provided")
 		}
-		address = "localhost:" + address
+
+		// Initialize and join client
 		newClient := client.NewClient(username, address)
+		defer newClient.Close() // Ensure the connection closes on exit
 
-		newClient.Broadcast()
+		newClient.Join() // Start the client join process and begin messaging
 
-		select {}
-
+		select {} // Keep the program running
 	}
 
 	if result == "Exit" {
-
-		//exit
 		log.Println("Exiting...")
 		os.Exit(1)
 	}
@@ -76,7 +67,6 @@ const (
 func SetupServer() {
 	log.Println("Setting up server on port:", port, "with the name", name)
 	lis, err := net.Listen("tcp", port)
-
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}

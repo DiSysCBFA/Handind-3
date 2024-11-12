@@ -3,51 +3,69 @@ package server
 import (
 	"context"
 	"log"
+	"sync"
 
 	chat "github.com/DiSysCBFA/Handind-3/api"
-	"github.com/DiSysCBFA/Handind-3/service"
 	"google.golang.org/grpc"
 )
 
-type server struct {
-	chat.UnimplementedChittyChatServer
-
-	name  string
-	clock service.LamportClock
+// Server represents the gRPC server with connected clients
+type Server struct {
+	chat.UnimplementedChittyChatServer                                       // Embed for forward compatibility
+	mu                                 sync.Mutex                            // Mutex to protect access to clients
+	clients                            map[string]chat.ChittyChat_JoinServer // Store clients for broadcasting
 }
 
-// Create and initialize a new server instance
-func CreateServer(name string) (*server, error) {
-	chittyChatServer := &server{
-		clock: service.LamportClock{},
-		name:  name,
-	}
-	chittyChatServer.clock.AddClock(name)
-	return chittyChatServer, nil
-}
-
-// Create a new gRPC server instance
+// CreateGrpcServer initializes a new gRPC server
 func CreateGrpcServer(name string) (*grpc.Server, error) {
 	grpcServer := grpc.NewServer()
-	chatServer, err := CreateServer(name)
-	if err != nil {
-		return nil, err
+	server := &Server{
+		clients: make(map[string]chat.ChittyChat_JoinServer),
 	}
-
-	// Register the ChittyChat server
-	chat.RegisterChittyChatServer(grpcServer, chatServer)
-
-	log.Printf("Starting gRPC server with name: %s", name)
-
-	chatServer.clock.Tick(chatServer.name)
-
+	chat.RegisterChittyChatServer(grpcServer, server)
+	log.Printf("gRPC server '%s' created", name)
 	return grpcServer, nil
 }
 
-func Broadcast(context.Context, *chat.Message) (*chat.Empty, error) {
-	return nil, nil
+// Broadcast sends a message to all connected clients
+func (s *Server) Broadcast(ctx context.Context, msg *chat.Message) (*chat.Empty, error) {
+	log.Printf("Broadcasting message from [%s]: %s", msg.Participant, msg.Content)
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	for _, client := range s.clients {
+		if err := client.Send(msg); err != nil {
+			log.Printf("Failed to send message to client: %v", err)
+		}
+	}
+
+	return &chat.Empty{}, nil
 }
 
-func Join(*chat.Empty, grpc.ServerStreamingServer[chat.Message]) error {
-	return nil
+// Join registers a client for receiving messages
+func (s *Server) Join(_ *chat.Empty, stream chat.ChittyChat_JoinServer) error {
+	// Generate a unique client ID for demonstration
+	clientID := stream.Context().Value("clientID").(string)
+	log.Printf("Client %s joined the chat", clientID)
+
+	s.mu.Lock()
+	s.clients[clientID] = stream
+	s.mu.Unlock()
+
+	// Remove client on disconnect
+	defer func() {
+		s.mu.Lock()
+		delete(s.clients, clientID)
+		s.mu.Unlock()
+		log.Printf("Client %s left the chat", clientID)
+	}()
+
+	// Keep the stream open so the client can receive messages
+	for {
+		select {
+		case <-stream.Context().Done():
+			return stream.Context().Err()
+		}
+	}
 }
