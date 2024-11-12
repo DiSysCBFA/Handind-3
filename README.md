@@ -10,6 +10,8 @@
   - [Set-up server](#set-up-server)
   - [Set-up client](#set-up-client)
   - [Exit](#exit)
+  - [Running Program](#running-program)
+  - [Kill the program](#kill-the-program)
 
 ## Installing and running the code
 
@@ -66,6 +68,7 @@ When this is done the following will be displayed:
 2024/10/28 22:14:50 Welcome! You just joined the chat with status: TestClient at time 1
 ````
 
+
 #### Exit
 
 If you choose exit, then the program will output the following:
@@ -75,3 +78,14 @@ If you choose exit, then the program will output the following:
 2024/10/28 22:15:58 Exiting...
 exit status 1
 ````
+
+### Running Program
+
+Once the system is up and running on a client, the following will be displayed:
+````
+Enter message:
+````
+Here you can type anything you want, and when done, press enter and it will broadcast the message to all active clients on a given port.
+
+### Kill the program
+For a single node to leave the chat, you can press ctrl+c. Or, to kill all nodes, you can kill the terminal running the server and press ctrl+c. This in-turn, kills the entire system.
