@@ -36,7 +36,7 @@ func main() {
 		selectionName := promptui.Prompt{
 			Label: "Enter desired name",
 		}
-		name, err := selectionName.Run()
+		username, err := selectionName.Run()
 		if err != nil {
 			log.Fatalf("Failed to run: %v", err)
 		}
@@ -49,8 +49,12 @@ func main() {
 		if err != nil || address == "" {
 			log.Fatalf("Address must be provided")
 		}
-		client.StartClient(name, address)
-		select {}
+		address = "localhost:" + address;
+		client.StartClient(username, address)
+		select {
+		// Listen for messages
+		//listenerforMessages()
+		}
 	}
 
 	if result == "Exit" {
