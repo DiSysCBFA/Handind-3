@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+
+
+option go_package = "github.com/DiSysCBFA/Handind-3/api";
+
+package chitty_chat;
+
+service ChittyChat {
+  rpc Broadcast(Message) returns (empty) {}
+  rpc Join(empty) returns (stream Message) {}
+
+}
+
+message empty {}
+
+
+message Message {
+  string participant = 1;
+  string content = 2;
+  int64 timestamp = 3;
+}
