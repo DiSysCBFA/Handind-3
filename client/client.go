@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/DiSysCBFA/Handind-3/api"
 	chat "github.com/DiSysCBFA/Handind-3/api"
@@ -70,12 +69,13 @@ func (c *Client) BroadcastMessages() {
 		if err != nil {
 			log.Fatalf("Failed to read message: %v", err)
 		}
+		c.timestamp++
 
 		// Send the message to the server using the Broadcast method
 		_, err = c.ChittyChatClient.Broadcast(context.Background(), &chat.Message{
 			Participant: c.name,
 			Content:     content,
-			Timestamp:   time.Now().Unix(),
+			Timestamp:   int64(c.timestamp),
 		})
 		if err != nil {
 			log.Fatalf("Failed to send message: %v", err)
