@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 
+	"github.com/DiSysCBFA/Handind-3/client"
 	"github.com/DiSysCBFA/Handind-3/server"
 
 	"github.com/manifoldco/promptui"
@@ -29,34 +30,35 @@ func main() {
 
 		//use grpc to start new server
 	}
-	/*
 
-		if result == "Start new Client" {
-			// Prompt for client name
-			selectionName := promptui.Prompt{
-				Label: "Enter desired name",
-			}
-			username, err := selectionName.Run()
-			if err != nil {
-				log.Fatalf("Failed to run: %v", err)
-			}
+	if result == "Start new Client" {
 
-			// Prompt for server address without a default
-			selectionAddress := promptui.Prompt{
-				Label: "Enter server address",
-			}
-			address, err := selectionAddress.Run()
-			if err != nil || address == "" {
-				log.Fatalf("Address must be provided")
-			}
-			address = "localhost:" + address
-			client.StartClient(username, address)
-			select {
-			}
-
-
+		// Prompt for client name
+		selectionName := promptui.Prompt{
+			Label: "Enter desired name",
 		}
-	*/
+		username, err := selectionName.Run()
+		if err != nil {
+			log.Fatalf("Failed to run: %v", err)
+		}
+
+		// Prompt for server address without a default
+		selectionAddress := promptui.Prompt{
+			Label: "Enter server address",
+		}
+
+		address, err := selectionAddress.Run()
+		if err != nil || address == "" {
+			log.Fatalf("Address must be provided")
+		}
+		address = "localhost:" + address
+		newClient := client.NewClient(username, address)
+
+		newClient.Broadcast()
+
+		select {}
+
+	}
 
 	if result == "Exit" {
 
