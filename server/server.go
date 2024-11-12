@@ -2,8 +2,10 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"sync"
+	"time"
 
 	chat "github.com/DiSysCBFA/Handind-3/api"
 	"google.golang.org/grpc"
@@ -44,11 +46,14 @@ func (s *Server) Broadcast(ctx context.Context, msg *chat.Message) (*chat.Empty,
 }
 
 // Join registers a client for receiving messages
+// Join registers a client for receiving messages
 func (s *Server) Join(_ *chat.Empty, stream chat.ChittyChat_JoinServer) error {
-	// Generate a unique client ID for demonstration
-	clientID := stream.Context().Value("clientID").(string)
+	// Use a unique client ID (you can generate this as needed)
+	clientID := fmt.Sprintf("client-%d", time.Now().UnixNano()) // Unique ID based on time
+
 	log.Printf("Client %s joined the chat", clientID)
 
+	// Register the client
 	s.mu.Lock()
 	s.clients[clientID] = stream
 	s.mu.Unlock()
