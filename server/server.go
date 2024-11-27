@@ -49,7 +49,6 @@ func (s *Server) Broadcast(ctx context.Context, msg *chat.Message) (*chat.Empty,
 }
 
 // Join registers a client for receiving messages
-// Join registers a client for receiving messages
 func (s *Server) Join(_ *chat.Empty, stream chat.ChittyChat_JoinServer) error {
 	s.clock++
 	// Use a unique client ID (you can generate this as needed)
